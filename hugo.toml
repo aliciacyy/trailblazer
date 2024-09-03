@@ -1,0 +1,8 @@
+baseURL = 'https://example.org/'
+languageCode = 'en-us'
+title = "Trailblazer's Path"
+theme = 'PaperMod'
+
+[params.homeInfoParams]
+Title = "Hi there."
+Content = "Adding more stuff soon."
