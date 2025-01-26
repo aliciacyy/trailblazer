@@ -1,0 +1,68 @@
+{{- with site.Params.homeInfoParams }}
+<article class="first-entry home-info">
+  <header class="entry-header">
+    <h1>{{ .Title | markdownify }}</h1>
+  </header>
+  <div class="entry-content">{{ .Content | markdownify }}</div>
+	<!-- <div class="stat-box">Hello???</div> -->
+  <div class="dashboard">
+    <div class="stat-card">
+      <h2>Total Runs</h2>
+      <p class="stat-box-no-decimal" id="total-runs" data-target="3">0</p>
+    </div>
+    <div class="stat-card">
+      <h2>Total Distance</h2>
+			<p class="stat">
+				<span class="stat-number" id="total-distance" data-target="24.27">0</span>
+				<span>km</span>
+			</p>
+    </div>
+    <div class="stat-card">
+      <h2>Last Run Date</h2>
+      <p class="stat">2024-12-04</p>
+    </div>
+    <div class="stat-card">
+      <h2>Average Speed</h2>
+			<p class="stat">
+				<span class="stat-number" data-target="7.29">0</span>
+				<span>min/km</span>
+			</p>
+    </div>
+  </div>
+  <footer class="entry-footer">
+    {{ partial "social_icons.html" (dict "align" site.Params.homeInfoParams.AlignSocialIconsTo) }}
+  </footer>
+</article>
+
+{{- end -}}
+
+<!-- <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    console.log("Script is running");
+    const statBox = document.querySelector(".stat-box");
+    console.log("Found stat-box:", statBox);
+    let count = 10;
+
+    if (statBox) {
+      console.log("Starting countdown");
+      // Initial display
+      statBox.textContent = count;
+
+      // Update every second
+      const countdown = setInterval(() => {
+        count--;
+        statBox.textContent = count;
+        console.log("Count:", count);
+
+        // Stop when we reach 0
+        if (count <= 0) {
+          clearInterval(countdown);
+          statBox.textContent = "Countdown complete!";
+          console.log("Countdown finished");
+        }
+      }, 1000); // 1000ms = 1 second
+    } else {
+      console.log("stat-box element not found");
+    }
+  });
+</script> -->
