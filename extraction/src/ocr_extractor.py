@@ -80,6 +80,18 @@ class OCRExtractor:
             (566, 1479, 111, 43), # pace
             (53, 1681, 144, 44) # time
         ]
+        expected_coords_dec = [
+            (53, 1377, 269, 75), # distance
+            (53, 1645, 95, 44), # heart rate
+            (566, 1645, 111, 43), # pace
+            (51, 1847, 144, 44), # time
+        ]
+        expected_coords_dec_fat = [
+            (51, 1478, 50, 73), # distance
+            (53, 1745, 85, 44), # heart rate
+            (566, 1745, 111, 44), # pace
+            (53, 1943, 146, 64), # time
+        ]
         img = cv2.imread(image_path)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 

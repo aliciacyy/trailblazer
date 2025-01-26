@@ -30,6 +30,20 @@ def main(screenshot):
     
     # Ensure the directory exists
     os.makedirs(os.path.dirname(md_filename), exist_ok=True)
+
+    distance = ''
+    heart_rate = ''
+    pace = ''
+    time = ''
+    
+    if len(results) > 0:
+        distance = results[0]['text']
+    if len(results) > 1:
+        heart_rate = results[1]['text']
+    if len(results) > 2:
+        pace = results[2]['text']
+    if len(results) > 3:
+        time = results[3]['text']
     
     # Create markdown content
     md_content = f"""
@@ -45,16 +59,16 @@ draft = false
 ## Stats
 
 ### Distance (km)
-{results[0]['text']}
+{distance}
 
 ### Heart Rate (bpm)
-{results[1]['text']}
+{heart_rate}
 
 ### Pace (min/km)
-{results[2]['text']}
+{pace}
 
 ### Time
-{results[3]['text']}
+{time}
 
 ## Notes
 N/A

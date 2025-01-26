@@ -2,13 +2,23 @@ baseURL = 'https://aliciacyy.github.io/trailblazer'
 languageCode = 'en-us'
 title = "Trailblazer's Path"
 theme = 'PaperMod'
+paginate = 5
 
 [params.homeInfoParams]
 Title = "Trailblazer's Path"
-Content = "A running journal to keep me motivated."
+Content = "A running journal to keep me motivated. 🌟"
 
 [[menu.main]]
 identifier = "about"
 name = "About"
 url = "/about/"
 weight = 30
+
+[[menu.main]]
+identifier = "archives"
+name = "Archives"
+url = "/archives/"
+weight = 5
+
+[params]
+ShowPageNums = 5

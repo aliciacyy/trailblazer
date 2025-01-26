@@ -41,3 +41,4 @@ node_modules/
 
 # Cache files
 .cache/ 
+extraction/src/__pycache__/

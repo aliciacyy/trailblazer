@@ -4,4 +4,7 @@ layout: "about"
 url: "/about/"
 ---
 
-Create this side project to try using Hugo.
+## Hello 👋
+I only got into running in the second half of 2024, thanks to Wif. 
+
+It served as a motivation for me to start this side project to try using Hugo.

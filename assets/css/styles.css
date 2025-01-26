@@ -36,8 +36,8 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    gap: 20px;
-    width: 80%;
+    gap: 15px;
+    width: 100%;
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -45,7 +45,7 @@
 .stat-card {
     background: var(--entry);
     border-radius: 8px;
-    padding: 1.5rem;
+    padding: 1rem;
     text-align: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease;
@@ -57,15 +57,36 @@
 
 .stat-card h3 {
     margin: 0 0 0.5rem 0;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     color: var(--primary);
 }
 
 .stat,
 .stat-box-no-decimal,
 .stat-number {
-    font-size: 1.5rem;
-    margin: 10px 0 0;
+    font-size: 1.2rem;
+    margin: 8px 0 0;
     font-weight: bold;
     transition: all 0.3s ease;
+}
+
+/* Add media query for mobile devices */
+@media screen and (max-width: 480px) {
+    .dashboard {
+        gap: 10px;
+    }
+    
+    .stat-card {
+        padding: 0.8rem;
+    }
+    
+    .stat-card h3 {
+        font-size: 0.8rem;
+    }
+    
+    .stat,
+    .stat-box-no-decimal,
+    .stat-number {
+        font-size: 1rem;
+    }
 }

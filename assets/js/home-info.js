@@ -41,6 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     '0' : 
                     '0.00';
                 animate(entry.target);
+                // Stop observing this element after first animation
+                observer.unobserve(entry.target);
             }
         });
     });

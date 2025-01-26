@@ -1,5 +1,11 @@
 {
-    "total_posts": 3,
-    "total_distance": 24.27,
-    "last_updated": "2025-01-26 16:45:32"
+    "total_posts": 10,
+    "total_distance": 62.05,
+    "total_time": {
+        "hours": 7,
+        "minutes": 19,
+        "seconds": 43,
+        "total_seconds": 26383
+    },
+    "last_updated": "2025-01-26 22:27:36"
 }
