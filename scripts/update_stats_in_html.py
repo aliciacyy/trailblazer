@@ -12,6 +12,9 @@ def update_total_runs():
             hours = total_time['hours']
             minutes = total_time['minutes']
             seconds = total_time['seconds']
+            average_pace = stats['average_pace']
+            average_pace_minutes = average_pace['minutes']
+            average_pace_seconds = average_pace['seconds']
     except FileNotFoundError:
         print("Error: stats.json not found")
         return
@@ -31,6 +34,12 @@ def update_total_runs():
 
         pattern = r'(<span class="stat-number" id="total-distance" data-target=")[^"]*(")'
         updated_content = re.sub(pattern, f'\\g<1>{total_distance}\\2', updated_content)
+        
+        pattern = r'(<span class="stat-box-no-decimal" id="average-pace-minutes" data-target=")[^"]*(")'
+        updated_content = re.sub(pattern, f'\\g<1>{average_pace_minutes}\\2', updated_content)
+
+        pattern = r'(<span class="stat-box-no-decimal" id="average-pace-seconds" data-target=")[^"]*(")'
+        updated_content = re.sub(pattern, f'\\g<1>{average_pace_seconds}\\2', updated_content)
 
         pattern = r'(<span class="stat-box-no-decimal" id="hours" data-target=")[^"]*(")'
         updated_content = re.sub(pattern, f'\\g<1>{hours}\\2', updated_content)

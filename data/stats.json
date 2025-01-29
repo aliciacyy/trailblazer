@@ -1,11 +1,15 @@
 {
-    "total_posts": 10,
-    "total_distance": 62.05,
+    "total_posts": 32,
+    "total_distance": 199.96,
     "total_time": {
-        "hours": 7,
-        "minutes": 19,
-        "seconds": 43,
-        "total_seconds": 26383
+        "hours": 19,
+        "minutes": 29,
+        "seconds": 11,
+        "total_seconds": 70151
     },
-    "last_updated": "2025-01-26 22:27:36"
+    "average_pace": {
+        "minutes": 7,
+        "seconds": 20
+    },
+    "last_updated": "2025-01-29 23:01:20"
 }

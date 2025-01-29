@@ -80,6 +80,11 @@ class OCRExtractor:
             (566, 1479, 111, 43), # pace
             (53, 1681, 144, 44) # time
         ]
+        expected_coords_strava = [
+            (189, 1114, 103, 42), # distance
+            (666, 1114, 116, 42), # heart rate
+            (197, 1306, 185, 42) # time
+        ]
         expected_coords_dec = [
             (53, 1377, 269, 75), # distance
             (53, 1645, 95, 44), # heart rate

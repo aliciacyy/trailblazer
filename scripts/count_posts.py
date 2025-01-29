@@ -12,6 +12,8 @@ def count_posts():
     total_distance = 0
     # Initialize total seconds
     total_seconds = 0
+    total_pace_seconds = 0
+    posts_with_pace = 0
     
 
     for root, dirs, files in os.walk(posts_dir):
@@ -55,8 +57,31 @@ def count_posts():
                                     total_seconds += (minutes * 60 + seconds)
                                 except ValueError:
                                     continue
+                        
+                        # Find the pace line
+                        pace_lines = [line.strip() for line in content_lines 
+                                    if '### Pace (min/km)' in line]
+                        if pace_lines:
+                            # Get the next line after "Pace (min/km)"
+                            pace_idx = content_lines.index(pace_lines[0])
+                            if pace_idx + 1 < len(content_lines):
+                                pace_value = content_lines[pace_idx + 1].strip()
+                                # Clean and convert the pace value
+                                try:
+                                    pace_value = pace_value.rstrip(':')
+                                    pace_minutes, pace_seconds = map(int, pace_value.split(':'))
+                                    pace_in_seconds = pace_minutes * 60 + pace_seconds
+                                    total_pace_seconds += pace_in_seconds
+                                    posts_with_pace += 1
+                                except ValueError:
+                                    continue
                 except (IOError, UnicodeDecodeError):
                     continue
+    
+    # Calculate average pace
+    avg_pace_seconds = total_pace_seconds // posts_with_pace if posts_with_pace > 0 else 0
+    avg_pace_minutes = avg_pace_seconds // 60
+    avg_pace_remaining_seconds = avg_pace_seconds % 60
     
     # Convert total seconds to hours, minutes, seconds
     hours = total_seconds // 3600
@@ -72,6 +97,10 @@ def count_posts():
             "minutes": minutes,
             "seconds": seconds,
             "total_seconds": total_seconds
+        },
+        "average_pace": {
+            "minutes": avg_pace_minutes,
+            "seconds": avg_pace_remaining_seconds
         },
         "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
