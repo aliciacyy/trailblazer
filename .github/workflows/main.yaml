@@ -60,7 +60,7 @@ jobs:
 
       - name: Run Python script to update HTML
         run: |
-          python3 scripts/update_states_in_html.py
+          python3 scripts/update_stats_in_html.py
 
       - name: Commit and push changes
         run: |
