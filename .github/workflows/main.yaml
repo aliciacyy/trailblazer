@@ -1,4 +1,4 @@
-name: Add new post Workflow
+name: Add New Post Workflow
 
 on:
   push:
@@ -27,15 +27,19 @@ jobs:
           echo "PACE=$PACE" >> $GITHUB_ENV
           echo "TIME=$TIME" >> $GITHUB_ENV
           echo "TITLE=$TITLE" >> $GITHUB_ENV
+
       - name: Run Python script with extracted values
         run: |
           python3 scripts/create_post.py "$DATE" "$DISTANCE" "$HEART_RATE" "$PACE" "$TIME" "$TITLE"
+
       - name: Run Python script to update values
         run: |
           python3 scripts/count_posts.py
-      - name: Run Python script to update html
+
+      - name: Run Python script to update HTML
         run: |
           python3 scripts/update_states_in_html.py
+
       - name: Commit and push changes
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
@@ -48,4 +52,4 @@ jobs:
 
   call-hugo:
     needs: process_commit
-    uses: ./.github/workflows/hugo.yaml 
+    uses: ./.github/workflows/hugo.yaml
