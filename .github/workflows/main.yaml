@@ -53,6 +53,8 @@ jobs:
     needs: check-commit
     if: needs.check-commit.outputs.should_continue == 'true'
     runs-on: ubuntu-latest
+    outputs:
+      changes_pushed: ${{ steps.push_changes.outputs.changes_pushed }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
