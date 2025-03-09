@@ -40,7 +40,7 @@ jobs:
           if ! [[ $DATE =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
             echo "Error: Date format is incorrect. Expected format: YYYY-MM-DD"
             echo "Received date: $DATE"
-            exit 1
+            exit 0
           fi
           
           echo "DATE=$DATE" >> $GITHUB_ENV
@@ -69,6 +69,7 @@ jobs:
           git add content/posts/
           git add data/stats.json
           git add layouts/partials/home_info.html
+          git add static/runs/
           git commit -m "[skip ci] Update stats and add new post" || echo "No changes to commit"
           git push
 
