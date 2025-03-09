@@ -6,6 +6,10 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: write
+  actions: write
+
 jobs:
   check-commit:
     runs-on: ubuntu-latest
@@ -95,6 +99,7 @@ jobs:
             echo "changes_pushed=false" >> $GITHUB_OUTPUT
           else
             git commit -m "[skip ci] Update stats and add new post"
+            git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
             git push
             echo "changes_pushed=true" >> $GITHUB_OUTPUT
           fi
