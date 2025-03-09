@@ -1,0 +1,51 @@
+name: Add new post Workflow
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  process_commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Read latest commit message
+        id: commit_message
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo "Commit message: $COMMIT_MSG"
+          # Split the commit message
+          read -r DATE DISTANCE HEART_RATE PACE TIME TITLE <<< "$COMMIT_MSG"
+          echo "DATE=$DATE" >> $GITHUB_ENV
+          echo "DISTANCE=$DISTANCE" >> $GITHUB_ENV
+          echo "HEART_RATE=$HEART_RATE" >> $GITHUB_ENV
+          echo "PACE=$PACE" >> $GITHUB_ENV
+          echo "TIME=$TIME" >> $GITHUB_ENV
+          echo "TITLE=$TITLE" >> $GITHUB_ENV
+      - name: Run Python script with extracted values
+        run: |
+          python3 scripts/create_post.py "$DATE" "$DISTANCE" "$HEART_RATE" "$PACE" "$TIME" "$TITLE"
+      - name: Run Python script to update values
+        run: |
+          python3 scripts/count_posts.py
+      - name: Run Python script to update html
+        run: |
+          python3 scripts/update_states_in_html.py
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add content/posts/
+          git add data/stats.json
+          git add layouts/partials/home_info.html
+          git commit -m "[skip ci] Update stats and add new post" || echo "No changes to commit"
+          git push
+
+  call-hugo:
+    needs: process_commit
+    uses: ./.github/workflows/hugo.yaml 

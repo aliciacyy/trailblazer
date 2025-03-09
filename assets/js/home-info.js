@@ -19,6 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const increment = Math.max(1, Math.floor(target / 20));
             const newValue = Math.min(count + increment, target);
             counter.innerText = Math.floor(newValue).toString();
+            // add 0 in front if less than 10
+            if (newValue < 10) {
+                counter.innerText = '0' + counter.innerText;
+            }
             
             if (newValue < target) {
                 setTimeout(() => animate(counter), 50);
