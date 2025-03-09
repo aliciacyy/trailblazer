@@ -111,4 +111,6 @@ jobs:
     if: |
       needs.check-commit.outputs.should_continue == 'true' &&
       needs.pre-hugo.outputs.changes_pushed == 'true'
+    with:
+      ref: main
     uses: ./.github/workflows/hugo.yaml
