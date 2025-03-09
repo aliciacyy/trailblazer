@@ -1,4 +1,4 @@
-name: Add New Post Workflow
+name: Main Workflow
 
 on:
   push:
@@ -6,13 +6,48 @@ on:
       - main
   workflow_dispatch:
 
-permissions:
-  contents: write
-  pages: write
-  id-token: write 
-  
 jobs:
+  check-commit:
+    runs-on: ubuntu-latest
+    outputs:
+      should_continue: ${{ steps.check_commit.outputs.should_continue }}
+      date: ${{ steps.check_commit.outputs.date }}
+      distance: ${{ steps.check_commit.outputs.distance }}
+      heart_rate: ${{ steps.check_commit.outputs.heart_rate }}
+      pace: ${{ steps.check_commit.outputs.pace }}
+      time: ${{ steps.check_commit.outputs.time }}
+      title: ${{ steps.check_commit.outputs.title }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check commit message format
+        id: check_commit
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo "Commit message: $COMMIT_MSG"
+          
+          # Try to split the commit message into expected parts
+          read -r DATE DISTANCE HEART_RATE PACE TIME TITLE <<< "$COMMIT_MSG"
+          
+          # Validate date format (YYYY-MM-DD)
+          if ! [[ $DATE =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+            echo "Commit message format does not match expected pattern"
+            echo "should_continue=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          echo "should_continue=true" >> $GITHUB_OUTPUT
+          echo "date=$DATE" >> $GITHUB_OUTPUT
+          echo "distance=$DISTANCE" >> $GITHUB_OUTPUT
+          echo "heart_rate=$HEART_RATE" >> $GITHUB_OUTPUT
+          echo "pace=$PACE" >> $GITHUB_OUTPUT
+          echo "time=$TIME" >> $GITHUB_OUTPUT
+          echo "title=$TITLE" >> $GITHUB_OUTPUT
+
   pre-hugo:
+    needs: check-commit
+    if: needs.check-commit.outputs.should_continue == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -28,29 +63,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Read latest commit message
-        id: commit_message
-        run: |
-          COMMIT_MSG=$(git log -1 --pretty=%B)
-          echo "Commit message: $COMMIT_MSG"
-          # Split the commit message
-          read -r DATE DISTANCE HEART_RATE PACE TIME TITLE <<< "$COMMIT_MSG"
-          
-          # Validate date format (YYYY-MM-DD)
-          if ! [[ $DATE =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
-            echo "Error: Date format is incorrect. Expected format: YYYY-MM-DD"
-            echo "Received date: $DATE"
-            exit 1
-          fi
-          
-          echo "DATE=$DATE" >> $GITHUB_ENV
-          echo "DISTANCE=$DISTANCE" >> $GITHUB_ENV
-          echo "HEART_RATE=$HEART_RATE" >> $GITHUB_ENV
-          echo "PACE=$PACE" >> $GITHUB_ENV
-          echo "TIME=$TIME" >> $GITHUB_ENV
-          echo "TITLE=$TITLE" >> $GITHUB_ENV
-
       - name: Run Python script with extracted values
+        env:
+          DATE: ${{ needs.check-commit.outputs.date }}
+          DISTANCE: ${{ needs.check-commit.outputs.distance }}
+          HEART_RATE: ${{ needs.check-commit.outputs.heart_rate }}
+          PACE: ${{ needs.check-commit.outputs.pace }}
+          TIME: ${{ needs.check-commit.outputs.time }}
+          TITLE: ${{ needs.check-commit.outputs.title }}
         run: |
           python3 scripts/create_post.py "$DATE" "$DISTANCE" "$HEART_RATE" "$PACE" "$TIME" "$TITLE"
 
@@ -63,6 +83,7 @@ jobs:
           python3 scripts/update_stats_in_html.py
 
       - name: Commit and push changes
+        id: push_changes
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
@@ -70,9 +91,29 @@ jobs:
           git add data/stats.json
           git add layouts/partials/home_info.html
           git add static/runs/
-          git commit -m "[skip ci] Update stats and add new post" || echo "No changes to commit"
-          git push
+          if git diff --staged --quiet; then
+            echo "changes_pushed=false" >> $GITHUB_OUTPUT
+          else
+            git commit -m "[skip ci] Update stats and add new post"
+            git push
+            echo "changes_pushed=true" >> $GITHUB_OUTPUT
+          fi
 
-  call-hugo:
-    needs: pre-hugo
-    uses: ./.github/workflows/hugo.yaml
+  trigger-hugo:
+    needs: [check-commit, pre-hugo]
+    if: |
+      needs.check-commit.outputs.should_continue == 'true' &&
+      needs.pre-hugo.outputs.changes_pushed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Hugo Workflow
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.name,
+              workflow_id: 'hugo.yaml',
+              ref: 'main'
+            });
