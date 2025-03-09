@@ -46,15 +46,18 @@ def count_posts():
                         time_lines = [line.strip() for line in content_lines 
                                     if '### Time' in line]
                         if time_lines:
-                            # Get the next line after "Time"
                             time_idx = content_lines.index(time_lines[0])
                             if time_idx + 1 < len(content_lines):
                                 time_value = content_lines[time_idx + 1].strip()
-                                # Clean and convert the time value
                                 try:
                                     time_value = time_value.rstrip(':')
-                                    minutes, seconds = map(int, time_value.split(':'))
-                                    total_seconds += (minutes * 60 + seconds)
+                                    time_parts = time_value.split(':')
+                                    if len(time_parts) == 3:  # HH:MM:SS
+                                        hours, minutes, seconds = map(int, time_parts)
+                                        total_seconds += (hours * 3600 + minutes * 60 + seconds)
+                                    elif len(time_parts) == 2:  # MM:SS
+                                        minutes, seconds = map(int, time_parts)
+                                        total_seconds += (minutes * 60 + seconds)
                                 except ValueError:
                                     continue
                         
@@ -62,11 +65,9 @@ def count_posts():
                         pace_lines = [line.strip() for line in content_lines 
                                     if '### Pace (min/km)' in line]
                         if pace_lines:
-                            # Get the next line after "Pace (min/km)"
                             pace_idx = content_lines.index(pace_lines[0])
                             if pace_idx + 1 < len(content_lines):
                                 pace_value = content_lines[pace_idx + 1].strip()
-                                # Clean and convert the pace value
                                 try:
                                     pace_value = pace_value.rstrip(':')
                                     pace_minutes, pace_seconds = map(int, pace_value.split(':'))
